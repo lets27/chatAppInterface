@@ -22,7 +22,7 @@ function App() {
   // Apply theme to document element
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-  }, []); // Empty dependency array to run only once on mount
+  }); // Empty dependency array to run only once on mount
 
   const routes = [
     {
