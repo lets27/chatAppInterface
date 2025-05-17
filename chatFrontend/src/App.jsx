@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Signup from "./pages/authentication/signup";
 import Login from "./pages/authentication/login";
 import HomePage from "./pages/Home/homePage";
-import Profile from "./pages/Profile/profiles";
+import Profile from "./pages/profile/profiles";
 
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
