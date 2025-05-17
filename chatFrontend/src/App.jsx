@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Signup from "./pages/authentication/Signup";
+import Signup from "./pages/authentication/signup";
 import Login from "./pages/authentication/login";
 import HomePage from "./pages/Home/homePage";
 import Profile from "./pages/Profile/profiles";
