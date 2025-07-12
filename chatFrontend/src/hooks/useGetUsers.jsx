@@ -25,6 +25,7 @@ const useGetUsers = () => {
       try {
         const res = await fetch(`${baseUrl}/api/official/all`, {
           method: "GET",
+          mode: "cors",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

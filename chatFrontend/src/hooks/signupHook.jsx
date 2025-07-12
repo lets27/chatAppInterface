@@ -19,6 +19,7 @@ const useSignup = () => {
     try {
       const res = await fetch(`${baseUrl}/api/auth/signup`, {
         method: "POST",
+        mode: "cors",
         body: formData, // do NOT stringify!
       });
 

@@ -20,6 +20,7 @@ const useLogin = () => {
     try {
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
         },

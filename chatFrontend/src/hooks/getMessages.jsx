@@ -21,7 +21,7 @@ const useGetMessages = () => {
 
     const id = selectUserId;
     try {
-      const res = await fetch(`${baseUrl}/api/official/${id}`, {
+      const res = await fetch(`${baseUrl}/api/official/messages/${id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -18,7 +18,10 @@ const UserContextProvider = ({ children }) => {
         const fetchUser = await fetch(`${baseUrl}/api/official/user`, {
           mode: "cors",
           method: "GET",
-          headers: { authorization: `Bearer ${token}` },
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
 
         if (!fetchUser.ok) {

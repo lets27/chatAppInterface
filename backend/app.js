@@ -8,7 +8,7 @@ import connectDb from "./database/mongoConnector.js";
 import path from "path";
 import { fileURLToPath } from "url"; // Add this import
 import fs from "fs"; // Add this import for path verification
-
+const PORT = process.env.PORT || 5000;
 // Proper __dirname replacement for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +23,11 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
+//log incoming request
+app.use((req, res, next) => {
+  console.log(`Incoming ${req.method} ${req.path}`);
+  next();
+});
 // //routes
 app.use("/api/auth", authRouter);
 app.use("/api/official", messageRouter);
@@ -49,17 +53,23 @@ app.get("/debug", (req, res) => {
   });
 });
 
+// 2. THEN Static files (production only)
 if (process.env.NODE_ENV === "production") {
   const staticPath = path.join(__dirname, "../chatFrontend/dist");
-  console.log("Serving static files from:", staticPath); // Debug log
+  console.log("Static files path verified:", fs.existsSync(staticPath));
 
-  app.use(express.static(staticPath));
+  app.use(
+    express.static(staticPath, {
+      index: false,
+      extensions: ["html"], // Explicitly only serve .html files
+    })
+  );
 
-  app.get("*", (req, res) => {
+  // SPA fallback - must come last
+  app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 }
-
 //global error handler
 app.use((error, req, res, next) => {
   const status = error.status || 500;

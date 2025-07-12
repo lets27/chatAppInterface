@@ -20,6 +20,8 @@ const useMessages = () => {
       if (!token) throw new Error("Not authenticated");
 
       const res = await fetch(`${baseUrl}/api/official/messages/${id}`, {
+        method: "GET",
+        mode: "cors",
         headers: { Authorization: `Bearer ${token}` },
       });
 
