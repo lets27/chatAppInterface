@@ -13,6 +13,4 @@ authRouter.post("/login", login);
 
 //an excetpion for single user
 
-authRouter.get("/use", verifyToken, singleUser);
-
 export default authRouter;

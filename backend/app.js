@@ -20,14 +20,27 @@ app.use(
   })
 );
 
-//routes
+// //routes
 app.use("/api/auth", authRouter);
 app.use("/api/official", messageRouter);
 
 app.use((req, res, next) => {
+  console.log(`Raw URL: ${req.url}`);
+  console.log(`Original URL: ${req.originalUrl}`);
+  next();
+});
+app.use((req, res, next) => {
   const error = new Error("route not found");
   error.status = 404;
   next(error);
+});
+
+//global error handler
+app.use((error, req, res, next) => {
+  const status = error.status || 500;
+  const message = error.message || "Internal Server Error";
+  console.error("Error:", message);
+  res.status(status).json({ error: message });
 });
 
 if (process.env.NODE_ENV === "production") {

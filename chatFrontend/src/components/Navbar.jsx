@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useUserContext from "../context/useUser";
 import toast from "react-hot-toast";
 import { useSocket } from "../context/useSocket";
+import liveChat from "../assets/live-chat.png";
 
 const Navbar = () => {
   const { user, loading } = useUserContext();
@@ -48,7 +49,13 @@ const Navbar = () => {
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
             >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-primary" />
+                <img
+                  src={liveChat}
+                  alt="Auth Image"
+                  //  className="w-24 h-24 mx-auto mb-4"
+                  width={36}
+                  height={36}
+                />
               </div>
               <h1 className="text-lg font-bold">Messenger</h1>
             </Link>

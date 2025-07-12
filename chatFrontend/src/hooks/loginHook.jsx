@@ -16,7 +16,7 @@ const useLogin = () => {
   const login = async (credentials) => {
     setLoading(true);
     setError("");
-    console.log("base:", baseUrl);
+
     try {
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",

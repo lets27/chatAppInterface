@@ -93,15 +93,19 @@ const signUp = async (req, res) => {
     });
   }
 };
+
 const login = async (req, res) => {
   const { password, email } = req.body;
 
-  console.log(req.body);
+  console.log("req body", req.body);
   const userObject = await User.findOne({ email });
   // console.log("user:", userObject);
 
   if (!userObject) {
-    return res.status(404).json("user not found");
+    const error = new Error();
+    error.message = "no Account with this email";
+    error.status = 404;
+    throw error;
   }
 
   const formData = {
@@ -156,7 +160,7 @@ const singleUser = async (req, res) => {
     }
 
     console.log("User found:", user.username);
-    return res.status(200).json(user);
+    return res.status(200).json({ user });
   } catch (error) {
     console.error("Error in singleUser:", error.message);
     return res.status(500).json({ error: "Internal server error." });

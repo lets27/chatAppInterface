@@ -1,14 +1,9 @@
 import { Camera, Loader, Mail, User } from "lucide-react";
 import useUserContext from "../../context/useUser";
 import userAcc from "../../assets/userAcc.png";
-import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { loading, user, error } = useUserContext(); // Add setUser from context
-
-  if (error) {
-    toast.error(error);
-  }
+  const { loading, user } = useUserContext(); // Add setUser from context
 
   if (loading) {
     return <Loader className="size-10 animate-spin" />;
