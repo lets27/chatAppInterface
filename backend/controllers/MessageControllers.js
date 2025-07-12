@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Message from "../database/Models/messageModel.js";
+import Message from "../database/Models/MessageModel.js";
 import User from "../database/Models/userModel.js";
 import cloudinary from "cloudinary";
 import multer from "multer";
