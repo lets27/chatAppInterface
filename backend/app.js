@@ -37,11 +37,6 @@ app.use((req, res, next) => {
   console.log(`Original URL: ${req.originalUrl}`);
   next();
 });
-app.use((req, res, next) => {
-  const error = new Error("route not found");
-  error.status = 404;
-  next(error);
-});
 
 app.get("/debug", (req, res) => {
   const staticPath = path.join(__dirname, "../chatFrontend/dist");
@@ -66,6 +61,12 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 }
+//404 middleware
+app.use((req, res, next) => {
+  const error = new Error("route not found");
+  error.status = 404;
+  next(error);
+});
 
 //global error handler
 app.use((error, req, res, next) => {
