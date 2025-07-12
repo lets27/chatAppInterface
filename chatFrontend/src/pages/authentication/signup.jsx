@@ -1,6 +1,6 @@
 import { Mail, MessageSquare, User, Lock, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import useSignup from "../../Hooks/signupHook";
+import useSignup from "../../hooks/signupHook";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../../components/imageGrid";
 import toast from "react-hot-toast";

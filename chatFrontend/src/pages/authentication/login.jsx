@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import AuthImagePattern from "../../components/imageGrid";
 import { Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 import { useState } from "react";
-import useLogin from "../../Hooks/loginHook";
+import useLogin from "../../hooks/loginHook";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({

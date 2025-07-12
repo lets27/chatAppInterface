@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useMessages from "../Hooks/useMessages";
+import useMessages from "../hooks/useMessages";
 import { useSelectedUser } from "../context/useSelectedUser";
 import useUserContext from "../context/useUser";
 import Chat from "./Chat";

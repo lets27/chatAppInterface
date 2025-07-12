@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelectedUser } from "../context/useSelectedUser";
-import useSendMessages from "../Hooks/useSendMessages";
+import useSendMessages from "../hooks/useSendMessages";
 import { Image, Loader, Send, Smile, X } from "lucide-react";
 import CustomEmojiPicker from "./emojiPicker";
 
