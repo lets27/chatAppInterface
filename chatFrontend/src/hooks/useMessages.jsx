@@ -13,12 +13,13 @@ const useMessages = () => {
 
   // Fetch initial messages
   const getMessages = async (selectedUserId) => {
+    const id = selectedUserId;
     try {
       setLoading(true);
       const token = localStorage.getItem("chatToke");
       if (!token) throw new Error("Not authenticated");
 
-      const res = await fetch(`${baseUrl}/api/official/${selectedUserId}`, {
+      const res = await fetch(`${baseUrl}/api/official/messages/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

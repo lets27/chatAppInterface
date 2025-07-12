@@ -50,7 +50,7 @@ const useSendMessages = () => {
         return;
       }
 
-      const data = await fetch(`${baseUrl}/api/official/message/${id}`, {
+      const data = await fetch(`${baseUrl}/api/official/send/${id}`, {
         mode: "cors",
         method: "POST",
         headers: {

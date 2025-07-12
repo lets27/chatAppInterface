@@ -11,8 +11,15 @@ const userSocketMap = {};
 //io server
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin:
+      process.env.NODE_ENV === "development" ? "http://localhost:5173" : true, // Allow all in production initially
+    methods: ["GET", "POST"],
+    credentials: true,
   },
+  // Add these additional options for stability
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  transports: ["websocket", "polling"],
 });
 
 export function getRecieverSocketId(recieverId) {

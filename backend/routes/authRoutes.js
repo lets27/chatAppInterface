@@ -11,6 +11,4 @@ const authRouter = Router();
 authRouter.post("/signup", upload.single("file"), signUp);
 authRouter.post("/login", login);
 
-//an excetpion for single user
-
 export default authRouter;
