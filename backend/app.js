@@ -77,6 +77,7 @@ app.use((error, req, res, next) => {
   console.error("Error:", message);
   res.status(status).json({ error: message });
 });
+
 connectDb()
   .then(
     server.listen(PORT, () => {
