@@ -44,7 +44,7 @@ app.use((error, req, res, next) => {
 });
 
 if (process.env.NODE_ENV === "production") {
-  const staticPath = path.join(__dirname, "../../chatFrontend/dist");
+  const staticPath = path.join(__dirname, "../chatFrontend/dist");
   console.log("Serving static files from:", staticPath); // Debug log
 
   app.use(express.static(staticPath));
