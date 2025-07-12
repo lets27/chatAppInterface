@@ -6,8 +6,12 @@ import { app, server } from "./socket/socket.js";
 import messageRouter from "./routes/messageRoutes.js";
 import connectDb from "./database/mongoConnector.js";
 import path from "path";
-const __dirname = path.resolve();
-const PORT = process.env.PORT;
+import { fileURLToPath } from "url"; // Add this import
+import fs from "fs"; // Add this import for path verification
+
+// Proper __dirname replacement for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,12 +39,14 @@ app.use((req, res, next) => {
   next(error);
 });
 
-//global error handler
-app.use((error, req, res, next) => {
-  const status = error.status || 500;
-  const message = error.message || "Internal Server Error";
-  console.error("Error:", message);
-  res.status(status).json({ error: message });
+app.get("/debug", (req, res) => {
+  const staticPath = path.join(__dirname, "../chatFrontend/dist");
+  res.json({
+    currentDir: __dirname,
+    staticPath,
+    pathExists: fs.existsSync(staticPath),
+    files: fs.existsSync(staticPath) ? fs.readdirSync(staticPath) : [],
+  });
 });
 
 if (process.env.NODE_ENV === "production") {
@@ -54,6 +60,13 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+//global error handler
+app.use((error, req, res, next) => {
+  const status = error.status || 500;
+  const message = error.message || "Internal Server Error";
+  console.error("Error:", message);
+  res.status(status).json({ error: message });
+});
 connectDb()
   .then(
     server.listen(PORT, () => {
