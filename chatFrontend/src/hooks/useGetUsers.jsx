@@ -23,7 +23,7 @@ const useGetUsers = () => {
 
     const getUsers = async () => {
       try {
-        const res = await fetch(`${baseUrl}/api/official`, {
+        const res = await fetch(`${baseUrl}/api/official/all`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
