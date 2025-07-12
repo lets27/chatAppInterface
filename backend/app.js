@@ -66,6 +66,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 }
+
 //global error handler
 app.use((error, req, res, next) => {
   const status = error.status || 500;
