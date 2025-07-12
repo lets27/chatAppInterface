@@ -58,12 +58,8 @@ if (process.env.NODE_ENV === "production") {
   const staticPath = path.join(__dirname, "../chatFrontend/dist");
   console.log("Static files path verified:", fs.existsSync(staticPath));
 
-  app.use(
-    express.static(staticPath, {
-      index: false,
-      extensions: ["html"], // Explicitly only serve .html files
-    })
-  );
+  // Serve static files with index.html enabled
+  app.use(express.static(staticPath)); // Remove index:false
 
   // SPA fallback - must come last
   app.get(/^(?!\/api).*/, (req, res) => {
