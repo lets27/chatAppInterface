@@ -18,19 +18,22 @@ cloudinary.config({
   api_secret: APISECRET,
 });
 
-const allUsers = async (req, res) => {
+const allUsers = async (req, res, next) => {
   try {
-    const currentUserId = req.user.id;
+    const currentUserId = req.user?.id;
+
     if (!currentUserId) {
-      return res.status.json("unauthorized access");
+      return res.status(401).json({ error: "Unauthorized access" });
     }
-    // Fetch all users except the current user
+
     const filteredUsers = await User.find({
       _id: { $ne: currentUserId },
     }).select("-password");
+
     return res.status(200).json(filteredUsers);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.error("allUsers error:", error);
+    next(error);
   }
 };
 

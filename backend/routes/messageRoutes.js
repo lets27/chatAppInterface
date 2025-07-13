@@ -9,9 +9,10 @@ import {
 import { singleUser } from "../controllers/authControllers.js";
 
 const messageRouter = Router();
-messageRouter.get("/user", singleUser); // Static route first
-messageRouter.get("/all", allUsers); // Changed from "/" to "/all"
-messageRouter.get("/messages/:id", getMessages); // Added "messages" prefix
-messageRouter.post("/send/:id", upload.single("file"), sendMessages); // Added "send" prefix
+messageRouter.use(verifyToken); // Apply token verification middleware to all routes
+messageRouter.get("/user", singleUser);
+messageRouter.get("/all", allUsers);
+messageRouter.get("/messages/:id", getMessages);
+messageRouter.post("/send/:id", upload.single("file"), sendMessages);
 
 export default messageRouter;

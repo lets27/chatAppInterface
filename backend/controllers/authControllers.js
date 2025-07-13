@@ -97,7 +97,6 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   const { password, email } = req.body;
 
-  console.log("req body", req.body);
   const userObject = await User.findOne({ email });
   // console.log("user:", userObject);
 
@@ -134,36 +133,32 @@ const login = async (req, res) => {
     if (err) return res.status(500).json("failed to generate token");
 
     const decoded = decode(token); // decode manually
-    console.log("Decoded right after signing:", decoded);
 
+    if (!decoded || !decoded.id) {
+      return res.status(500).json({ error: "Failed to decode token" });
+    }
     return res.status(200).json({ token, user: userObject });
   });
 };
 
-const singleUser = async (req, res) => {
+const singleUser = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    console.log("myuser:", req.user);
-    console.log("userId", userId);
+    const userId = req.user?.id;
+    console.log("Authenticated user ID:", userId);
+
     if (!userId) {
-      console.warn("No user ID found in request.");
-      return res
-        .status(401)
-        .json({ error: "Unauthorized. No user ID provided." });
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
     }
 
     const user = await User.findById(userId);
-    console.log("user found:", user);
     if (!user) {
-      console.warn("User not found for ID:", userId);
-      return res.status(404).json({ error: "User not found." });
+      return res.status(404).json({ error: "User not found" });
     }
-
-    console.log("User found:", user.username);
+    console.log("Found user:", user);
     return res.status(200).json({ user });
   } catch (error) {
-    console.error("Error in singleUser:", error.message);
-    return res.status(500).json({ error: "Internal server error." });
+    console.error("singleUser error:", error);
+    next(error);
   }
 };
 
