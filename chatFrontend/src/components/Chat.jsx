@@ -15,6 +15,16 @@ const Chat = ({ messages, loading, error, selectedUser, currentUser }) => {
   if (loading) return <MessageSkeleton />;
   if (error)
     return <div className="p-4 text-red-500">Error: {error.message}</div>;
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return ""; // fallback for invalid dates
+    return date.toLocaleString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "numeric",
+      month: "short",
+    });
+  };
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
@@ -24,8 +34,8 @@ const Chat = ({ messages, loading, error, selectedUser, currentUser }) => {
         {messages.map((msg, index) => {
           const isCurrentUser = msg.senderId === currentUser._id;
           const profilePic = isCurrentUser
-            ? currentUser.profilePicture || "avatar.png"
-            : selectedUser.profilePicture || "avatar.png";
+            ? currentUser.profilePicture || "/avatar.png"
+            : selectedUser.profilePicture || "/avatar.png";
 
           return (
             <div
@@ -37,27 +47,31 @@ const Chat = ({ messages, loading, error, selectedUser, currentUser }) => {
                   <img src={profilePic} alt="profile" />
                 </div>
               </div>
+
               <div className="chat-header mb-1">
-                <time className="text-xs opacity-50 ml-1">{msg.createdAt}</time>
+                <time className="text-xs opacity-50 ml-1">
+                  {formatDate(msg.createdAt)}
+                </time>
               </div>
+
               <div
-                className={`chat-bubble flex flex-col ${
+                className={`chat-bubble font-semibold flex flex-col shadow-md rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   isCurrentUser
-                    ? "bg-primary text-primary-content"
-                    : "bg-base-200"
+                    ? "bg-green-500 text-white"
+                    : "bg-blue-100 text-blue-900"
                 }`}
               >
                 {msg.image && (
                   <img
                     src={msg.image}
                     alt="Attached content"
-                    className="rounded-md mb-2 max-w-[280px] sm:max-w-xs object-cover"
+                    className="rounded-lg mb-2 max-w-[280px] sm:max-w-xs object-cover border border-gray-200"
                   />
                 )}
                 {msg.text && (
                   <p
-                    className={`mt-1 ${
-                      msg.image ? "pt-2 border-t border-opacity-20" : ""
+                    className={`${
+                      msg.image ? "pt-2 border-t border-white/20" : ""
                     }`}
                   >
                     {msg.text}
@@ -67,6 +81,7 @@ const Chat = ({ messages, loading, error, selectedUser, currentUser }) => {
             </div>
           );
         })}
+
         {/* Add an empty div at the end with the ref */}
         <div ref={messagesEndRef} />
       </div>

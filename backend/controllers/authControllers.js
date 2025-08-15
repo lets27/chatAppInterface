@@ -7,6 +7,7 @@ import cloudinary from "cloudinary";
 import User from "../database/Models/userModel.js";
 import dotenv from "dotenv";
 import multer from "multer";
+import { zodCreateUser } from "./zodschemas.js";
 dotenv.config();
 const secretKey = process.env.JWTSECRET;
 const storage = multer.memoryStorage();
@@ -21,54 +22,74 @@ cloudinary.config({
   api_key: APIKEY,
   api_secret: APISECRET,
 });
-
 const signUp = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  try {
-    const { username, email, password } = req.body;
 
-    if (!username || !email || !password || !req.file) {
+  try {
+    // Validate input
+    const validationResult = zodCreateUser.safeParse({
+      ...req.body,
+      picture: req.file,
+    });
+
+    if (!validationResult.success) {
+      // Flatten Zod errors to a nice object
+      const flatErrors = validationResult.error.flatten().fieldErrors;
+
       await session.abortTransaction();
       session.endSession();
+
       return res.status(400).json({
-        error: "Please provide email, username, password, and image.",
+        error: "check input length is over 4 characters",
+        message: flatErrors, // <-- return exact field errors
       });
     }
 
-    const existingUser = await User.findOne({ email }).session(session);
+    const { username, email, password } = validationResult.data;
+
+    // Check for existing user
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }],
+    }).session(session);
+
     if (existingUser) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({
+        error:
+          existingUser.email === email
+            ? "Email already in use"
+            : "Username already taken",
+      });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // File validation
-    if (!["image/jpeg", "image/png"].includes(req.file.mimetype)) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).json({ error: "Invalid file type." });
+    // Handle file upload if present
+    let uploadResult = null;
+    if (req.file) {
+      uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          { folder: foldername },
+          (error, result) => (error ? reject(error) : resolve(result))
+        );
+        stream.end(req.file.buffer);
+      });
     }
 
-    // Cloudinary upload
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.v2.uploader.upload_stream(
-        { folder: foldername },
-        (error, result) => (error ? reject(error) : resolve(result))
-      );
-      stream.end(req.file.buffer);
-    });
-
+    // Create user
     const newUser = await User.create(
       [
         {
           email,
           username,
           password: hashedPassword,
-          profilePicture: uploadResult.secure_url,
-          filename: uploadResult.public_id,
+          ...(uploadResult && {
+            profilePicture: uploadResult.secure_url,
+            filename: uploadResult.public_id,
+          }),
         },
       ],
       { session }
@@ -77,19 +98,22 @@ const signUp = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.status(201).json({
+    const userResponse = newUser[0].toObject();
+    delete userResponse.password;
+
+    return res.status(201).json({
       message: "User created successfully",
-      user: newUser[0], // Since we used array syntax
+      user: userResponse,
     });
   } catch (error) {
-    if (session.inTransaction()) {
-      await session.abortTransaction();
-    }
+    if (session.inTransaction()) await session.abortTransaction();
     session.endSession();
+
     console.error("Signup Error:", error);
+
     res.status(500).json({
       error: "Internal server error",
-      details: error.message,
+      ...(process.env.NODE_ENV === "development" && { details: error.message }),
     });
   }
 };

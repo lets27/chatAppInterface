@@ -5,12 +5,12 @@ const ChatHeader = () => {
   // const { user } = useUserContext();
 
   return (
-    <div className="p-2.5 border-b border-base-300">
+    <div className="p-2.5 border-b border-base-300 bg-slate-500">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="avatar relative">
-            <div className=" size-10 rounded-full relative">
+            <div className=" size-10 rounded-full relative font-semibold">
               <img
                 src={selectedUser.profilePicture || "/avatar.png"}
                 alt={selectedUser.username}
